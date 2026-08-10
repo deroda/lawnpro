@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TurfTrack Pro | Sports Turf Monitoring & Pitch Clipping Volume System</title>
+  <meta name="description" content="Professional Sports Turf Monitoring System and Pitch Clipping Volume Tracker for Turfgrass Managers & Head Groundsmen.">
+  <!-- Google Fonts & Font Awesome Icons -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="dark-theme">
+  <div class="app-layout">
+    <!-- Sidebar Navigation -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-icon">
+          <i class="fa-solid fa-seedling"></i>
+        </div>
+        <div class="brand-text">
+          <h2>TurfTrack <span>PRO</span></h2>
+          <p>Sports Turf Analytics</p>
+        </div>
+      </div>
+
+      <nav class="nav-menu">
+        <button class="nav-item active" data-tab="dashboard">
+          <i class="fa-solid fa-chart-pie"></i>
+          <span>Dashboard</span>
+        </button>
+        <button class="nav-item" data-tab="tracker">
+          <i class="fa-solid fa-table-list"></i>
+          <span>Clipping Logs</span>
+        </button>
+        <button class="nav-item" data-tab="analytics">
+          <i class="fa-solid fa-chart-line"></i>
+          <span>Analytics & Trends</span>
+        </button>
+        <button class="nav-item" data-tab="advisory">
+          <i class="fa-solid fa-brain"></i>
+          <span>Agronomic Insights</span>
+        </button>
+        <button class="nav-item" data-tab="settings">
+          <i class="fa-solid fa-sliders"></i>
+          <span>Pitch Settings</span>
+        </button>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="quick-status">
+          <span class="status-indicator online"></span>
+          <div class="status-info">
+            <span class="status-title">System Ready</span>
+            <span class="status-sub">2 Pitches Monitored</span>
+          </div>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Mobile Nav Backdrop -->
+    <div class="sidebar-backdrop" id="sidebar-backdrop"></div>
+
+    <!-- Main Content Area -->
+    <main class="main-content">
+      <!-- Top Header -->
+      <header class="top-header">
+        <div class="header-left">
+          <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle navigation menu">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+          <div>
+            <h1 id="page-title">Dashboard Overview</h1>
+            <p class="subtitle" id="page-subtitle">Real-time yield metrics & pitch performance summary</p>
+          </div>
+        </div>
+        <div class="header-actions">
+          <button class="btn btn-outline" id="btn-export">
+            <i class="fa-solid fa-download"></i> <span class="btn-text">Export Data</span>
+          </button>
+          <button class="btn btn-primary" id="btn-add-entry">
+            <i class="fa-solid fa-plus"></i> <span class="btn-text">Log Clipping Data</span>
+          </button>
+        </div>
+      </header>
+
+      <!-- TAB 1: DASHBOARD -->
+      <section id="tab-dashboard" class="tab-page active">
+        <!-- KPI Metrics Grid -->
+        <div class="kpi-grid">
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Avg Clip Volume</span>
+              <div class="kpi-icon icon-emerald"><i class="fa-solid fa-gauge-high"></i></div>
+            </div>
+            <div class="kpi-value" id="kpi-avg-clipvol">0.024 <small>mL/m²</small></div>
+            <div class="kpi-footer">
+              <span class="badge badge-ideal" id="kpi-clipvol-badge">Intermediate Turf</span>
+              <span class="kpi-subtext">Across active samples</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Pitch 1 Avg Yield</span>
+              <div class="kpi-icon icon-blue"><i class="fa-solid fa-layer-group"></i></div>
+            </div>
+            <div class="kpi-value" id="kpi-pitch1-avg">206.7 <small>L</small></div>
+            <div class="kpi-footer">
+              <span class="badge badge-surging" id="kpi-pitch1-badge">Surging (>150L)</span>
+              <span class="kpi-subtext">Area: 7,140 m²</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Pitch 2 Avg Yield</span>
+              <div class="kpi-icon icon-purple"><i class="fa-solid fa-layer-group"></i></div>
+            </div>
+            <div class="kpi-value" id="kpi-pitch2-avg">137.3 <small>L</small></div>
+            <div class="kpi-footer">
+              <span class="badge badge-optimal" id="kpi-pitch2-badge">Optimal (70-150L)</span>
+              <span class="kpi-subtext">Area: 7,140 m²</span>
+            </div>
+          </div>
+
+          <div class="kpi-card">
+            <div class="kpi-header">
+              <span class="kpi-label">Total Volume Collected</span>
+              <div class="kpi-icon icon-amber"><i class="fa-solid fa-basket-shopping"></i></div>
+            </div>
+            <div class="kpi-value" id="kpi-total-yield">0.0 <small>L</small></div>
+            <div class="kpi-footer">
+              <span class="kpi-subtext" id="kpi-total-cuts-count">42 Total Cuts Logged</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Dashboard Grid -->
+        <div class="dashboard-grid">
+          <div class="card chart-card flex-grow-2">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-chart-area"></i> Daily Yield Growth Trend (Est. Pitch Total - Liters)
+              </div>
+              <div class="card-controls">
+                <select id="dash-pitch-filter" class="form-select form-select-sm">
+                  <option value="all">Compare All Pitches</option>
+                  <option value="Pitch 1">Pitch 1 Only</option>
+                  <option value="Pitch 2">Pitch 2 Only</option>
+                </select>
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrapper">
+                <canvas id="chart-growth-trend"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card chart-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-diagram-project"></i> Sectional Balance (Left / Center / Right)
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrapper">
+                <canvas id="chart-sectional-radar"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Color Keys Legend Bar -->
+        <div class="legend-panel mt-4 mb-3">
+          <div class="legend-group">
+            <h4><i class="fa-solid fa-palette"></i> ClipVol Color Key (mL per m²)</h4>
+            <div class="legend-items">
+              <span class="legend-item chip-low"><i class="fa-solid fa-circle"></i> &lt; 10 Low Growth</span>
+              <span class="legend-item chip-ideal"><i class="fa-solid fa-circle"></i> 10 - 14.9 Ideal Turf</span>
+              <span class="legend-item chip-intermediate"><i class="fa-solid fa-circle"></i> 15 - 19.9 Intermediate</span>
+              <span class="legend-item chip-healthy"><i class="fa-solid fa-circle"></i> 20 - 50 Healthy Lawn</span>
+              <span class="legend-item chip-excessive"><i class="fa-solid fa-circle"></i> &gt; 50 Excessive Growth</span>
+            </div>
+          </div>
+          <div class="legend-divider"></div>
+          <div class="legend-group">
+            <h4><i class="fa-solid fa-circle-nodes"></i> Pitch Total Volume Key (L)</h4>
+            <div class="legend-items">
+              <span class="legend-item chip-struggling"><i class="fa-solid fa-circle"></i> &lt; 70 L Struggling</span>
+              <span class="legend-item chip-optimal"><i class="fa-solid fa-circle"></i> 70 - 150 L Optimal</span>
+              <span class="legend-item chip-surging"><i class="fa-solid fa-circle"></i> &gt; 150 L Surging</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Logs Quick Table -->
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">
+              <i class="fa-solid fa-clock-rotate-left"></i> Recent Turf Clipping Logs
+            </div>
+            <button class="btn btn-sm btn-outline" onclick="switchTab('tracker')">View All Logs &rarr;</button>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="data-table" id="dashboard-recent-table">
+                <thead>
+                  <tr>
+                    <th>Date</th>
+                    <th>Pitch</th>
+                    <th>Direction</th>
+                    <th>Left (L)</th>
+                    <th>Center (L)</th>
+                    <th>Right (L)</th>
+                    <th>Total (L)</th>
+                    <th>ClipVol (mL/m²)</th>
+                    <th>Est. Total (L)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="dashboard-recent-tbody">
+                  <!-- Injected via JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: CLIPPING LOGS & TRACKER TABLE -->
+      <section id="tab-tracker" class="tab-page">
+        <!-- Color Keys Legend Bar -->
+        <div class="legend-panel mb-3">
+          <div class="legend-group">
+            <h4><i class="fa-solid fa-palette"></i> ClipVol Color Key (mL per m²)</h4>
+            <div class="legend-items">
+              <span class="legend-item chip-low"><i class="fa-solid fa-circle"></i> &lt; 10 Low Growth</span>
+              <span class="legend-item chip-ideal"><i class="fa-solid fa-circle"></i> 10 - 14.9 Ideal Turf</span>
+              <span class="legend-item chip-intermediate"><i class="fa-solid fa-circle"></i> 15 - 19.9 Intermediate</span>
+              <span class="legend-item chip-healthy"><i class="fa-solid fa-circle"></i> 20 - 50 Healthy Lawn</span>
+              <span class="legend-item chip-excessive"><i class="fa-solid fa-circle"></i> &gt; 50 Excessive Growth</span>
+            </div>
+          </div>
+          <div class="legend-divider"></div>
+          <div class="legend-group">
+            <h4><i class="fa-solid fa-circle-nodes"></i> Pitch Total Volume Key (L)</h4>
+            <div class="legend-items">
+              <span class="legend-item chip-struggling"><i class="fa-solid fa-circle"></i> &lt; 70 L Struggling</span>
+              <span class="legend-item chip-optimal"><i class="fa-solid fa-circle"></i> 70 - 150 L Optimal</span>
+              <span class="legend-item chip-surging"><i class="fa-solid fa-circle"></i> &gt; 150 L Surging</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header flex-wrap gap-3">
+            <div class="card-title">
+              <i class="fa-solid fa-table"></i> Comprehensive Pitch Clipping Master Log
+            </div>
+            <div class="filter-toolbar">
+              <div class="search-input-group">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="filter-search" placeholder="Search date, pitch, direction..." class="form-input">
+              </div>
+              <select id="filter-pitch" class="form-select">
+                <option value="all">All Pitches</option>
+                <option value="Pitch 1">Pitch 1</option>
+                <option value="Pitch 2">Pitch 2</option>
+              </select>
+              <select id="filter-direction" class="form-select">
+                <option value="all">All Directions</option>
+                <option value="Width">Width</option>
+                <option value="Length">Length</option>
+              </select>
+              <select id="filter-growth-tier" class="form-select">
+                <option value="all">All Growth Tiers</option>
+                <option value="low">Low Growth (&lt; 10)</option>
+                <option value="ideal">Ideal Turf (10-14.9)</option>
+                <option value="intermediate">Intermediate (15-19.9)</option>
+                <option value="healthy">Healthy Lawn (20-50)</option>
+                <option value="excessive">Excessive Growth (&gt; 50)</option>
+              </select>
+            </div>
+          </div>
+          <div class="card-body p-0">
+            <div class="table-responsive">
+              <table class="data-table" id="master-logs-table">
+                <thead>
+                  <tr>
+                    <th data-sort="date">Date <i class="fa-solid fa-sort"></i></th>
+                    <th data-sort="pitch">Pitch <i class="fa-solid fa-sort"></i></th>
+                    <th data-sort="direction">Direction <i class="fa-solid fa-sort"></i></th>
+                    <th>Left (L)</th>
+                    <th>Center (L)</th>
+                    <th>Right (L)</th>
+                    <th data-sort="totalL">Total (L) <i class="fa-solid fa-sort"></i></th>
+                    <th>Sample Area (m²)</th>
+                    <th data-sort="clipVol">ClipVol (mL/m²) <i class="fa-solid fa-sort"></i></th>
+                    <th data-sort="estTotalL">Est. Pitch Total (L) <i class="fa-solid fa-sort"></i></th>
+                    <th>Growth Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="master-logs-tbody">
+                  <!-- Dynamic render -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="card-footer table-footer">
+            <div class="records-count" id="table-record-count">Showing 0 of 0 entries</div>
+            <div class="table-summary-pills">
+              <span class="pill">Avg ClipVol: <strong id="summary-table-avg-clipvol">0.000</strong> mL/m²</span>
+              <span class="pill">Total Pitch 1: <strong id="summary-table-pitch1-tot">0.0</strong> L</span>
+              <span class="pill">Total Pitch 2: <strong id="summary-table-pitch2-tot">0.0</strong> L</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: ANALYTICS & DETAILED CHARTS -->
+      <section id="tab-analytics" class="tab-page">
+        <div class="analytics-grid">
+          <div class="card chart-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-chart-line"></i> ClipVol Intensity Comparison (mL / m²)
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrapper">
+                <canvas id="chart-clipvol-bar"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card chart-card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-arrows-up-down-left-right"></i> Mowing Direction Comparison (Length vs Width)
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrapper">
+                <canvas id="chart-direction-comparison"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="card chart-card span-full">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-cubes"></i> Pitch 1 vs Pitch 2 Daily Accumulation (Liters)
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="chart-wrapper tall-chart">
+                <canvas id="chart-comparison-stacked"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: AGRONOMIC INSIGHTS & ADVISORY -->
+      <section id="tab-advisory" class="tab-page">
+        <div class="advisory-container">
+          <div class="card advisory-hero">
+            <div class="advisory-icon"><i class="fa-solid fa-wheat-awn"></i></div>
+            <div class="advisory-hero-content">
+              <h2>Turfgrass Agronomic Diagnostic Report</h2>
+              <p>Automated clipping volume analysis and turf health recommendations based on empirical growth indices.</p>
+            </div>
+          </div>
+
+          <div class="advisory-cards-grid">
+            <div class="card advisory-status-card" id="pitch1-advisory-card">
+              <div class="advisory-card-header">
+                <h3>Pitch 1 Turf Health Analysis</h3>
+                <span class="badge badge-surging" id="pitch1-status-badge">Surging Yield</span>
+              </div>
+              <div class="advisory-body">
+                <div class="metric-row">
+                  <span>Current Period Avg ClipVol:</span>
+                  <strong id="adv-p1-clipvol">0.029 mL/m²</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Current Period Avg Total:</span>
+                  <strong id="adv-p1-total">206.7 L / cut</strong>
+                </div>
+                <hr class="divider">
+                <h4><i class="fa-solid fa-user-doctor"></i> Recommended Groundsman Actions:</h4>
+                <ul class="advice-list" id="adv-p1-list">
+                  <li><i class="fa-solid fa-triangle-exclamation text-amber"></i> High growth spurts detected (peaks exceeding 500L). Monitor Nitrogen inputs to prevent scalar scalp damage.</li>
+                  <li><i class="fa-solid fa-scissors"></i> Maintain consistent mowing frequency to prevent biomass accumulation in mower baskets.</li>
+                  <li><i class="fa-solid fa-droplet"></i> Check soil moisture; excessive clippings often correspond with high moisture & temperature spikes.</li>
+                </ul>
+              </div>
+            </div>
+
+            <div class="card advisory-status-card" id="pitch2-advisory-card">
+              <div class="advisory-card-header">
+                <h3>Pitch 2 Turf Health Analysis</h3>
+                <span class="badge badge-optimal" id="pitch2-status-badge">Optimal Range</span>
+              </div>
+              <div class="advisory-body">
+                <div class="metric-row">
+                  <span>Current Period Avg ClipVol:</span>
+                  <strong id="adv-p2-clipvol">0.019 mL/m²</strong>
+                </div>
+                <div class="metric-row">
+                  <span>Current Period Avg Total:</span>
+                  <strong id="adv-p2-total">137.3 L / cut</strong>
+                </div>
+                <hr class="divider">
+                <h4><i class="fa-solid fa-user-doctor"></i> Recommended Groundsman Actions:</h4>
+                <ul class="advice-list" id="adv-p2-list">
+                  <li><i class="fa-solid fa-circle-check text-emerald"></i> Pitch 2 is performing within the target optimal window (70 - 150L).</li>
+                  <li><i class="fa-solid fa-arrows-spin"></i> Continue alternating mowing direction (Length / Width) to minimize leaf blade lean.</li>
+                  <li><i class="fa-solid fa-vial"></i> Scheduled micro-nutrient feed recommended prior to upcoming high-use fixture periods.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- Formula & Calculation Guide Card -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-calculator"></i> Clipping Volume Formulas & Calculation Reference
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="formula-grid">
+                <div class="formula-box">
+                  <div class="formula-title">1. Sample Area Calculation</div>
+                  <div class="formula-code">
+                    Sample Area (m²) = Mower Width (m) &times; Distance per Run (m) &times; Runs
+                  </div>
+                  <p class="formula-desc">Default: 1.62m &times; 370m &times; 1 = <strong>599.4 m²</strong></p>
+                </div>
+
+                <div class="formula-box">
+                  <div class="formula-title">2. Clip Volume (mL per m²)</div>
+                  <div class="formula-code">
+                    ClipVol (mL/m²) = (Total Basket Vol (L) &times; 1000) / Sample Area (m²)
+                  </div>
+                  <p class="formula-desc">Normalizes clippings collected across varying sample sizes into mL/m² for pitch standardization.</p>
+                </div>
+
+                <div class="formula-box">
+                  <div class="formula-title">3. Estimated Pitch Total Yield (L)</div>
+                  <div class="formula-code">
+                    Est. Total (L) = ClipVol (mL/m²) &times; Pitch Area (m²) / 1000
+                  </div>
+                  <p class="formula-desc">Extrapolates total pitch clippings based on the pitch dimension (7,140 m²).</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Comprehensive Agronomic Knowledge Base & Professional Protocol -->
+          <div class="card mt-4">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-book-bookmark"></i> Elite Pitch Measurement Standards & Diagnostic Protocol
+              </div>
+            </div>
+            <div class="card-body">
+              <div class="advisory-knowledge-grid">
+
+                <div class="knowledge-card">
+                  <div class="knowledge-header"><i class="fa-solid fa-stopwatch text-emerald"></i> Measurement Frequency & Baseline</div>
+                  <p>For elite international pitches and full-time training facilities, clip volume (mL/m²) should be measured <strong>every single time the pitch is mowed</strong> (4-5x per week in peak growth). Daily tracking transforms mowing into a real-time plant health diagnostic tool.</p>
+                  <ul class="knowledge-bullets mt-2">
+                    <li><strong>Dial in Nutrient Inputs:</strong> Immediate feedback on N, Ca, Mg uptake before visual color changes occur.</li>
+                    <li><strong>Accurate PGR Management:</strong> Identifies exactly when Trinexapac-ethyl regulation holds or rebounds.</li>
+                    <li><strong>Predict Surface Playability:</strong> Controls soft growth to maintain firmness and shear strength.</li>
+                  </ul>
+                </div>
+
+                <div class="knowledge-card">
+                  <div class="knowledge-header"><i class="fa-solid fa-clipboard-list text-blue"></i> Standardized Measurement Protocol</div>
+                  <ol class="knowledge-numbered">
+                    <li><strong>Select an Indicator Zone:</strong> Choose a consistent 100m center pass or high-wear area.</li>
+                    <li><strong>Standardize Collection:</strong> Use the same mower, cut height, and time of day.</li>
+                    <li><strong>Measure Consistently:</strong> Empty clippings into a graduated cylinder; tamp with uniform pressure to remove air.</li>
+                    <li><strong>Calculate Rate:</strong> Divide volume (mL) by pass area (m²) for exact mL/m².</li>
+                  </ol>
+                </div>
+
+                <div class="knowledge-card span-full-grid">
+                  <div class="knowledge-header"><i class="fa-solid fa-triangle-exclamation text-amber"></i> 2. Re-Evaluating the 500L+ Surge (100% PRG Profile)</div>
+                  <p class="mt-2 text-dim">The absence of fescue means the primary danger of the current growth flush has shifted.</p>
+                  <div class="surge-dangers-grid mt-2">
+                    <div class="danger-box">
+                      <strong><i class="fa-solid fa-circle-check text-emerald"></i> No Competitive Smothering</strong>
+                      <p>You no longer need to worry about the ryegrass bullying and killing off a slower fescue understory. The entire canopy is flushing uniformly.</p>
+                    </div>
+                    <div class="danger-box">
+                      <strong><i class="fa-solid fa-triangle-exclamation text-amber"></i> The Real Danger—Root Exhaustion & Shear Loss</strong>
+                      <p>Pushing nearly 600L a day from a 100% PRG sward means the plant is exclusively funneling its carbohydrate reserves into leaf extension. The roots are currently starving and dying back. While J Premier Pitch is highly wear-tolerant, these rapidly grown, succulent leaves have weak cellular walls. If a squad trains on this immediately, the surface will be highly prone to divoting and slickness.</p>
+                    </div>
+                    <div class="danger-box">
+                      <strong><i class="fa-solid fa-bug text-red"></i> Thatch and Disease Trap</strong>
+                      <p>100% PRG produces a very dense canopy. Pushing this much leaf mass creates a thick, humid boundary layer at the surface, acting as an incubator for pathogens like Leaf Spot and Microdochium Patch, especially as temperatures fluctuate.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="knowledge-card span-full-grid">
+                  <div class="knowledge-header"><i class="fa-solid fa-bottle-droplet text-blue"></i> 3. The Attraxor Strategy for 100% PRG</div>
+                  <p class="mt-2 text-dim">Because this is a pure ryegrass sward, your application of Attraxor is much more straightforward, though equally urgent.</p>
+                  <div class="sward-spec-grid mt-2">
+                    <div class="spec-col">
+                      <h4><i class="fa-solid fa-sliders text-blue"></i> Uniform Regulation</h4>
+                      <p>Prohexadione-calcium will brake the entire sward evenly. You will not have to balance the different regulatory responses of two distinct grass species.</p>
+                    </div>
+                    <div class="spec-col">
+                      <h4><i class="fa-solid fa-layer-group text-emerald"></i> Sward Density</h4>
+                      <p>Once the Attraxor takes effect, the J Premier Pitch will stop growing upward and start tillering laterally. This will massively increase the density of the pitch, locking the surface together and restoring the shear strength required for elite boot traction.</p>
+                    </div>
+                    <div class="spec-col">
+                      <h4><i class="fa-solid fa-shield-halved text-amber"></i> Poa annua Defense</h4>
+                      <p>Pure PRG swards that are pushed hard with nitrogen and water are prime real estate for Poa annua ingress. Attraxor’s strong suppressive effect on Poa will help keep this premium sward clean while the ryegrass recovers its root mass.</p>
+                    </div>
+                  </div>
+                  <div class="action-callout-box mt-3 p-3 radius-sm" style="background: rgba(16, 185, 129, 0.1); border-left: 4px solid #10b981;">
+                    <p class="m-0"><i class="fa-solid fa-cloud-sun text-emerald me-2"></i> <strong>Critical Action Window:</strong> Given that the current weather window has dropped back into the optimal sub-21°C range, executing the Attraxor application is the critical next step to halt the carbohydrate drain and protect the root structure of this elite seed mix.</p>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 5: PITCH SETTINGS & PARAMETERS -->
+      <section id="tab-settings" class="tab-page">
+        <div class="settings-grid">
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-sliders"></i> Equipment & Mower Settings
+              </div>
+            </div>
+            <div class="card-body">
+              <form id="settings-form">
+                <div class="form-group">
+                  <label for="set-mower-width" class="form-label">Mower Cut Width (m)</label>
+                  <input type="number" step="0.01" id="set-mower-width" class="form-input" value="1.62">
+                  <small class="form-text">Standard cylinder/rotary mower deck width.</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="set-sample-dist" class="form-label">Sample Distance per Run (m)</label>
+                  <input type="number" step="1" id="set-sample-dist" class="form-input" value="370">
+                  <small class="form-text">Distance traveled during clipping sample collection.</small>
+                </div>
+
+                <div class="form-group">
+                  <label for="set-sample-runs" class="form-label">Runs per Sample</label>
+                  <input type="number" step="1" id="set-sample-runs" class="form-input" value="1">
+                  <small class="form-text">Number of parallel passes per sample strip.</small>
+                </div>
+
+                <div class="form-group">
+                  <label class="form-label">Calculated Sample Area</label>
+                  <div class="readonly-badge" id="calc-sample-area-display">599.4 m²</div>
+                </div>
+
+                <hr class="divider">
+
+                <div class="form-group">
+                  <label for="set-p1-area" class="form-label">Pitch 1 Surface Area (m²)</label>
+                  <input type="number" step="10" id="set-p1-area" class="form-input" value="7140">
+                </div>
+
+                <div class="form-group">
+                  <label for="set-p2-area" class="form-label">Pitch 2 Surface Area (m²)</label>
+                  <input type="number" step="10" id="set-p2-area" class="form-input" value="7140">
+                </div>
+
+                <button type="submit" class="btn btn-primary">
+                  <i class="fa-solid fa-floppy-disk"></i> Save Settings
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-header">
+              <div class="card-title">
+                <i class="fa-solid fa-database"></i> Data & System Control
+              </div>
+            </div>
+            <div class="card-body">
+              <p>Manage sample datasets and system data storage.</p>
+              <div class="d-flex flex-column gap-3 mt-3">
+                <button class="btn btn-outline" id="btn-reset-default">
+                  <i class="fa-solid fa-rotate-left"></i> Restore Original Prompt Dataset
+                </button>
+                <button class="btn btn-danger" id="btn-clear-data">
+                  <i class="fa-solid fa-trash"></i> Clear All Clipping Records
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Modal for Logging / Editing Clipping Entries -->
+  <div class="modal-backdrop" id="entry-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="modal-title"><i class="fa-solid fa-clipboard-check"></i> Log New Clipping Data</h3>
+        <button class="modal-close" id="modal-close-btn">&times;</button>
+      </div>
+      <form id="entry-form">
+        <input type="hidden" id="entry-id">
+        <div class="modal-body">
+          <div class="form-row">
+            <div class="form-group col-6">
+              <label for="entry-date" class="form-label">Date</label>
+              <input type="date" id="entry-date" class="form-input" required>
+            </div>
+            <div class="form-group col-6">
+              <label for="entry-pitch" class="form-label">Pitch</label>
+              <select id="entry-pitch" class="form-select" required>
+                <option value="Pitch 1">Pitch 1</option>
+                <option value="Pitch 2">Pitch 2</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group col-12">
+              <label for="entry-direction" class="form-label">Mowing Direction</label>
+              <select id="entry-direction" class="form-select" required>
+                <option value="Width">Width</option>
+                <option value="Length">Length</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="sectional-inputs-box">
+            <h4><i class="fa-solid fa-basket-shopping"></i> Sectional Clipping Volumes (Liters)</h4>
+            <p class="subtext">Enter clippings collected from mower catchers for each swath section.</p>
+
+            <div class="form-row mt-2">
+              <div class="form-group col-4">
+                <label for="entry-left" class="form-label">Left Section (L)</label>
+                <input type="number" step="0.1" min="0" id="entry-left" class="form-input calc-trigger" placeholder="0.0">
+              </div>
+              <div class="form-group col-4">
+                <label for="entry-center" class="form-label">Center Section (L)</label>
+                <input type="number" step="0.1" min="0" id="entry-center" class="form-input calc-trigger" placeholder="0.0">
+              </div>
+              <div class="form-group col-4">
+                <label for="entry-right" class="form-label">Right Section (L)</label>
+                <input type="number" step="0.1" min="0" id="entry-right" class="form-input calc-trigger" placeholder="0.0">
+              </div>
+            </div>
+          </div>
+
+          <!-- Calculated Preview Cards -->
+          <div class="preview-cards-row">
+            <div class="preview-card">
+              <span>Total Volume:</span>
+              <strong id="prev-total-l">0.0 L</strong>
+            </div>
+            <div class="preview-card">
+              <span>ClipVol (mL/m²):</span>
+              <strong id="prev-clipvol">0.000</strong>
+            </div>
+            <div class="preview-card">
+              <span>Est. Pitch Total:</span>
+              <strong id="prev-est-total">0.0 L</strong>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-outline" id="btn-cancel-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-entry">Save Record</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Mobile Bottom Navigation Bar -->
+  <nav class="mobile-bottom-nav">
+    <button class="mobile-nav-item active" data-tab="dashboard">
+      <i class="fa-solid fa-chart-pie"></i>
+      <span>Dashboard</span>
+    </button>
+    <button class="mobile-nav-item" data-tab="tracker">
+      <i class="fa-solid fa-table-list"></i>
+      <span>Logs</span>
+    </button>
+    <button class="mobile-nav-item nav-fab" id="mobile-fab-add" aria-label="Log Data">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+    <button class="mobile-nav-item" data-tab="analytics">
+      <i class="fa-solid fa-chart-line"></i>
+      <span>Trends</span>
+    </button>
+    <button class="mobile-nav-item" data-tab="advisory">
+      <i class="fa-solid fa-brain"></i>
+      <span>Insights</span>
+    </button>
+  </nav>
+
+  <script src="app.js"></script>
+</body>
+</html>
